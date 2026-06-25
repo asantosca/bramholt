@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bramholt · App installation — Jim &amp; Kara</title>
+<link rel="stylesheet" href="ds/styles.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root { --header-h: 96px; }
+  html, body { height: 100%; }
+  body { margin: 0; background:
+      radial-gradient(1200px 600px at 50% -10%, #fff8ec 0%, var(--bg-page) 60%);
+      color: var(--text-body); }
+
+  /* ---------- Header / controls ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 14px 28px; min-height: var(--header-h);
+    background: rgba(250,244,232,.86); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand img { width: 34px; height: 41px; }
+  .brand .wm { font-family: var(--font-wordmark); letter-spacing: .18em; font-size: 15px; color: var(--gold-700); line-height: 1; }
+  .brand .sub { font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--text-strong); margin-top: 3px; }
+  .spacer { flex: 1 1 auto; }
+
+  .seg { display: inline-flex; background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--radius-pill); padding: 4px; gap: 4px; }
+  .seg button {
+    font-family: var(--ui-font); font-size: 14px; font-weight: 600; color: var(--text-muted);
+    border: none; background: transparent; border-radius: var(--radius-pill); padding: 8px 15px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px; transition: all var(--duration-fast) var(--ease-standard);
+  }
+  .seg button[aria-pressed="true"] { background: var(--bg-surface); color: var(--text-strong); box-shadow: var(--shadow-sm); }
+  .seg button[aria-pressed="true"].k { color: var(--gold-700); }
+  .seg button[aria-pressed="true"].j { color: var(--guard-600); }
+  /* Desktop/Mobile control — only for Kara's website, in walkthrough */
+  .kctl { display: none; }
+  body.flow-k.mode-flow .kctl { display: inline-flex; }
+
+  /* ---------- Canvas ---------- */
+  .canvas {
+    display: flex; flex-wrap: wrap; gap: 30px 26px;
+    padding: 36px 28px 140px; align-items: flex-start;
+  }
+  .group-title { flex: 0 0 100%; display: flex; align-items: center; gap: 14px; margin: 8px 0 0; font-family: var(--ui-font); }
+  .group-title .num { width: 34px; height: 34px; flex: none; border-radius: 50%; background: var(--ink-900); color: var(--gold-200); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 600; font-size: 16px; }
+  .group-title .eyebrow2 { font-family: var(--font-wordmark); letter-spacing: .14em; font-size: 12px; color: var(--gold-700); }
+  .group-title .ttl { font-family: var(--font-display); font-weight: 600; font-size: 21px; color: var(--text-strong); margin-top: 2px; }
+
+  .frame { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  figcaption { display: flex; align-items: center; gap: 9px; font-family: var(--ui-font); }
+  figcaption .badge { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--gold-700); background: var(--gold-50); border: 1px solid var(--gold-100); border-radius: 6px; padding: 3px 8px; }
+  figcaption .name { font-size: 14px; font-weight: 600; color: var(--text-strong); }
+
+  /* ---------- Jim: native app phone frame ---------- */
+  .phone { background: #0b0a08; box-shadow: var(--shadow-xl); }
+  .phone--android { width: 316px; border-radius: 38px; padding: 8px; }
+  .screen { position: relative; width: 300px; height: 640px; overflow: hidden; display: flex; flex-direction: column; font-family: var(--ui-font); }
+  .phone--android .screen { border-radius: 30px; }
+
+  /* ---------- Kara: responsive website in a browser frame ---------- */
+  .browser { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-xl); }
+  .browser.is-mobile  { width: 402px; }
+  .browser.is-desktop { width: min(1060px, 90vw); }
+  .browser-bar { height: 44px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 14px; background: var(--bg-sunken); border-bottom: 1px solid var(--border-subtle); }
+  .lights { display: flex; gap: 6px; }
+  .lights span { width: 11px; height: 11px; border-radius: 50%; background: var(--stone-300); }
+  .lights span:nth-child(1){ background: #e0a09a; } .lights span:nth-child(2){ background: #e6cd8f; } .lights span:nth-child(3){ background: #a8cdb0; }
+  .addr { flex: 1; max-width: 460px; height: 27px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+  .browser-body { height: 690px; overflow: auto; background: var(--bg-page); }
+
+  /* shared web page chrome */
+  .webpage { min-height: 100%; display: flex; flex-direction: column; font-family: var(--ui-font); }
+  .wtop { flex: none; display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; }
+  .wtop .wmk { font-family: var(--font-wordmark); letter-spacing: .16em; font-size: 14px; color: var(--gold-700); }
+  .wtop a { font-size: 14px; font-weight: 600; color: var(--text-muted); text-decoration: none; }
+  .is-desktop .wtop { padding: 22px 40px; }
+
+  /* step card: full-bleed on mobile, floating card on desktop */
+  .wbody { flex: 1; display: flex; flex-direction: column; }
+  .wcard { display: flex; flex-direction: column; flex: 1; }
+  .is-mobile .wcard { padding: 8px 24px 28px; }
+  .is-desktop .wcard { flex: none; width: 100%; max-width: 560px; margin: 12px auto 48px; padding: 36px 40px 40px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+
+  .wback { align-self: flex-start; margin-left: -6px; color: var(--text-muted); }
+  .wsteps { display: flex; gap: 7px; margin: 12px 0 20px; }
+  .wsteps span { width: 26px; height: 4px; border-radius: 2px; background: var(--stone-200); }
+  .wsteps span.on { background: var(--gold-600); }
+  .wh { font-family: var(--font-display); font-weight: 600; color: var(--text-strong); margin: 0; font-size: 28px; line-height: 1.15; }
+  .is-desktop .wh { font-size: 31px; }
+  .wsub { font-size: 15.5px; line-height: 1.5; color: var(--text-muted); margin: 8px 0 0; }
+  .wfields { display: flex; flex-direction: column; gap: 14px; margin-top: 22px; }
+  .wlabel { font-weight: 500; font-size: 14px; color: var(--text-strong); }
+  .wfield { display: flex; flex-direction: column; gap: 7px; }
+  .wgrow { flex: 1; }
+  .wcta { margin-top: 22px; }
+  .is-mobile .wcta { position: sticky; bottom: 0; padding-top: 14px; margin-top: auto;
+    background: linear-gradient(to top, var(--bg-page) 72%, transparent); }
+  .wnote { text-align: center; font-size: 13.5px; color: var(--text-muted); margin-top: 14px; }
+  .wmono { font-family: var(--font-mono); }
+
+  /* welcome hero: two-pane on desktop, stacked on mobile */
+  .whero { flex: 1; display: flex; min-height: 100%; }
+  .is-mobile .whero { flex-direction: column; }
+  .whero-brand { position: relative; overflow: hidden; background: var(--ink-900); color: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px 32px; }
+  .is-desktop .whero-brand { width: 46%; }
+  .is-mobile .whero-brand { flex: none; padding: 52px 28px; }
+  .whero-brand .ring { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 1.5px solid rgba(196,160,99,.16); transform: translate(-50%,-50%); }
+  .whero-main { flex: 1; background: var(--bg-page); display: flex; flex-direction: column; }
+  .whero-cta { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 44px 40px; max-width: 460px; }
+  .is-mobile .whero-cta { padding: 36px 28px 40px; }
+
+  /* contact rows / cards reused inside web steps */
+  .wrow { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--border-subtle); background: var(--bg-surface); border-radius: var(--radius-md); }
+
+  /* ---------- Mode: walkthrough (single device) ---------- */
+  body.mode-flow .canvas { justify-content: center; align-items: center; min-height: calc(100vh - var(--header-h) - 30px); padding-bottom: 150px; }
+  body.mode-flow .group-title { display: none; }
+  body.mode-flow .frame { display: none; }
+  body.mode-flow .frame.is-active { display: flex; animation: rise var(--duration-slow) var(--ease-out); }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ---------- Mode: all screens (gallery) ---------- */
+  body.mode-all .frame { cursor: zoom-in; }
+  body.mode-all .frame .phone, body.mode-all .frame .browser { transition: transform var(--duration-normal) var(--ease-standard); }
+  body.mode-all .frame:hover .phone, body.mode-all .frame:hover .browser { transform: translateY(-4px); }
+  body.mode-all .browser-body { height: 560px; }
+  .handoff { flex: 0 0 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin: 6px 0; color: var(--gold-700); font-size: 13.5px; font-weight: 600; font-family: var(--ui-font); text-align: center; }
+  .handoff .rule { flex: 1; height: 1px; background: var(--gold-200); max-width: 260px; }
+  body.mode-flow .handoff { display: none; }
+
+  /* ---------- Bottom nav (walkthrough) ---------- */
+  .dock {
+    position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 60;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-surface); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-pill); padding: 8px 10px; box-shadow: var(--shadow-lg);
+  }
+  body.mode-all .dock { display: none; }
+  .dock .navbtn { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-default); background: var(--bg-surface); color: var(--text-strong); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .dock .navbtn:disabled { opacity: .4; cursor: default; }
+  .dock .navbtn:not(:disabled):hover { background: var(--gold-50); border-color: var(--gold-300); }
+  .dots { display: flex; align-items: center; gap: 7px; padding: 0 8px; }
+  .dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--stone-300); transition: all var(--duration-fast) var(--ease-standard); }
+  .dots span.on { background: var(--gold-500); transform: scale(1.2); }
+  .dock .step { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-muted); min-width: 86px; text-align: center; }
+
+  .hint { position: fixed; left: 50%; bottom: 86px; transform: translateX(-50%); z-index: 55; font-size: 12.5px; color: var(--text-subtle); font-family: var(--ui-font); background: rgba(250,244,232,.8); padding: 4px 12px; border-radius: var(--radius-pill); }
+  body.mode-all .hint { display: none; }
+</style>
+</head>
+<body class="mode-flow flow-k">
+
+<header class="topbar">
+  <div class="brand">
+    <img src="assets/bramholt-mark.svg" alt="Bramholt">
+    <div>
+      <div class="wm">BRAMHOLT · GUARDIAN</div>
+      <div class="sub">App installation — Jim &amp; Kara</div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="seg kctl" role="group" aria-label="Kara viewport">
+    <button class="k" data-kview="desktop" aria-pressed="false"><i data-lucide="monitor" width="16" height="16"></i> Desktop</button>
+    <button class="k" data-kview="mobile" aria-pressed="true"><i data-lucide="smartphone" width="16" height="16"></i> Mobile</button>
+  </div>
+  <div class="seg" role="group" aria-label="Choose flow">
+    <button class="k" data-flow="k" aria-pressed="true"><i data-lucide="globe" width="16" height="16"></i> Kara · Web</button>
+    <button class="j" data-flow="j" aria-pressed="false"><i data-lucide="smartphone" width="16" height="16"></i> Jim · Android app</button>
+  </div>
+  <div class="seg" role="group" aria-label="Choose view">
+    <button data-mode="flow" aria-pressed="true"><i data-lucide="play" width="16" height="16"></i> Walkthrough</button>
+    <button data-mode="all" aria-pressed="false"><i data-lucide="layout-grid" width="16" height="16"></i> All screens</button>
+  </div>
+</header>
+
+<div class="canvas" id="canvas">
+
+  <!-- =====================================================  KARA — responsive website  ===================================================== -->
+  <div class="group-title" data-group="k">
+    <span class="num">1</span>
+    <div>
+      <div class="eyebrow2">KARA · CAREGIVER — bramholt.com (mobile-first website)</div>
+      <div class="ttl">She sets up Bramholt and manages everything — from any browser</div>
+    </div>
+  </div>
+
+  <!-- K1 — WELCOME -->
+  <figure class="frame" data-flow="k" data-step="0" id="k1">
+    <figcaption><span class="badge">K1</span><span class="name">Welcome</span></figcaption>
+    <div class="browser is-mobile">
+      <div class="browser-bar"><span class="lights"><span></span><span></span><span></span></span><span class="addr"><i data-lucide="lock" width="12" height="12"></i> bramholt.com</span></div>
+      <div class="browser-body"><div class="webpage">
+        <div class="whero">
+          <div class="whero-brand">
+            <span class="ring" style="width:240px;height:240px;"></span>
+            <span class="ring" style="width:380px;height:380px;border-color:rgba(196,160,99,.09);"></span>
+            <span class="ring" style="width:520px;height:520px;border-color:rgba(196,160,99,.05);"></span>
+            <img src="assets/bramholt-mark.svg" alt="Bramholt" style="width:72px; height:72px; margin-bottom:20px; position:relative;">
+            <div style="font-family:var(--font-wordmark); font-weight:600; letter-spacing:.20em; font-size:22px; color:var(--gold-200); position:relative;">BRAMHOLT</div>
+            <div style="font-family:var(--font-display); font-size:23px; line-height:1.3; color:var(--stone-50); margin-top:20px; max-width:20ch; position:relative;">A quiet guardian for the calls that matter.</div>
+          </div>
+          <div class="whero-main">
+            <div class="wtop"><span class="wmk">BRAMHOLT</span><a href="#">Sign in</a></div>
+            <div class="whero-cta">
+              <h1 class="wh" style="font-size:32px;">Set up scam protection for someone you love</h1>
+              <p class="wsub" style="font-size:16px;">It only takes a few minutes, and you'll manage everything from here — on your phone now, your computer later.</p>
+              <div style="display:flex; flex-direction:column; gap:11px; margin-top:10px;">
+                <button class="bh-btn bh-btn--gold bh-btn--lg bh-btn--block">Get started</button>
+                <button class="bh-btn bh-btn--ghost bh-btn--md bh-btn--block" style="color:var(--text-link);">I already have an account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </figure>
+
+  <!-- K2 — CREATE ACCOUNT -->
+  <figure class="frame" data-flow="k" data-step="1" id="k2">
+    <figcaption><span class="badge">K2</span><span class="name">Create your account</span></figcaption>
+    <div class="browser is-mobile">
+      <div class="browser-bar"><span class="lights"><span></span><span></span><span></span></span><span class="addr"><i data-lucide="lock" width="12" height="12"></i> bramholt.com/signup</span></div>
+      <div class="browser-body"><div class="webpage">
+        <div class="wtop"><span class="wmk">BRAMHOLT</span><a href="#">Help</a></div>
+        <div class="wbody"><div class="wcard">
+          <button class="bh-iconbtn bh-iconbtn--sm wback"><i data-lucide="chevron-left" width="22" height="22"></i></button>
+          <div class="wsteps"><span class="on"></span><span></span><span></span><span></span><span></span><span></span></div>
+          <h1 class="wh">Create your account</h1>
+          <p class="wsub">You'll manage everything from here. Only you can change these settings.</p>
+          <div class="wfields">
+            <label class="wfield"><span class="wlabel">Your name</span><input class="bh-input" value="Kara Bramwell" readonly></label>
+            <label class="wfield"><span class="wlabel">Email</span><input class="bh-input" value="kara@email.com" readonly></label>
+            <label class="wfield"><span class="wlabel">Create a password</span><input class="bh-input" type="password" value="passw0rd" readonly></label>
+          </div>
+          <div class="wgrow"></div>
+          <div class="wcta">
+            <button class="bh-btn bh-btn--primary bh-btn--lg bh-btn--block">Continue</button>
+            <div class="wnote">Already protecting someone? <span style="color:var(--text-link); font-weight:600;">Sign in</span></div>
+          </div>
+        </div></div>
+      </div></div>
+    </div>
+  </figure>
+
+  <!-- K3 — WHO YOU'RE PROTECTING -->
+  <figure class="frame" data-flow="k" data-step="2" id="k3">
+    <figcaption><span class="badge">K3</span><span class="name">Who you're protecting</span></figcaption>
+    <div class="browser is-mobile">
+      <div class="browser-bar"><span class="lights"><span></span><span></span><span></span></span><span class="addr"><i data-lucide="lock" width="12" height="12"></i> bramholt.com/setup/who</span></div>
+      <div class="browser-body"><div class="webpage">
+        <div class="wtop"><span class="wmk">BRAMHOLT</span><a href="#">Help</a></div>
+        <div class="wbody"><div class="wcard">
+          <button class="bh-iconbtn bh-iconbtn--sm wback"><i data-lucide="chevron-left" width="22" height="22"></i></button>
+          <div class="wsteps"><span class="on"></span><span class="on"></span><span></span><span></span><span></span><span></span></div>
+          <h1 class="wh">Who are you setting up?</h1>
+          <p class="wsub">A few details about Jim.</p>
+          <div style="display:flex; align-items:center; gap:14px; margin-top:16px;">
+            <span style="width:54px; height:54px; flex:none; border-radius:50%; border:2px dashed var(--gold-300); background:var(--gold-50); display:flex; align-items:center; justify-content:center; color:var(--gold-700);"><i data-lucide="camera" width="21" height="21"></i></span>
+            <span style="font-size:14px; font-weight:600; color:var(--text-link);">Add a photo of Jim</span>
+          </div>
+          <div class="wfields" style="margin-top:14px;">
+            <label class="wfield"><span class="wlabel">Their name</span><input class="bh-input" value="Jim Bramwell" readonly></label>
+            <div style="display:flex; gap:12px;">
+              <label class="wfield" style="flex:1;"><span class="wlabel">Relationship</span><input class="bh-input" value="Dad" readonly></label>
+              <label class="wfield" style="flex:1.4;"><span class="wlabel">Their number</span><input class="bh-input" value="(604) 555‑0192" readonly></label>
+            </div>
+          </div>
+          <div class="wgrow"></div>
+          <div class="wcta"><button class="bh-btn bh-btn--primary bh-btn--lg bh-btn--block">Continue</button></div>
+        </div></div>
+      </div></div>
+    </div>
+  </figure>
+
+  <!-- K4 — SEND JIM THE APP -->
+  <figure class="frame" data-flow="k" data-step="3" id="k4">
+    <figcaption><span class="badge">K4</span><span class="name">Send Jim the app</span></figcaption>
+    <div class="browser is-mobile">
+      <div class="browser-bar"><span class="lights"><span></span><span></span><span></span></span><span class="addr"><i data-lucide="lock" width="12" height="12"></i> bramholt.com/setup/send</span></div>
+      <div class="browser-body"><div class="webpage">
+        <div class="wtop"><span class="wmk">BRAMHOLT</span><a href="#">Help</a></div>
+        <div class="wbody"><div class="wcard">
+          <button class="bh-iconbtn bh-iconbtn--sm wback"><i data-lucide="chevron-left" width="22" height="22"></i></button>
+          <div class="wsteps"><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span><span></span></div>
+          <h1 class="wh">Send Jim the app</h1>
+          <p class="wsub">We'll text Jim a link to install the Bramholt app — with his code already inside.</p>
+          <div style="display:flex; align-items:center; gap:10px; margin-top:16px;">
+            <span style="font-size:13px; font-weight:600; color:var(--text-strong); white-space:nowrap;">Jim's phone</span>
+            <div style="display:flex; gap:6px; flex:1;">
+              <button style="flex:1; min-height:40px; border-radius:10px; border:2px solid var(--gold-600); background:var(--gold-50); font-family:var(--ui-font); font-size:13px; font-weight:600; color:var(--text-strong); display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;"><i data-lucide="smartphone" width="15" height="15"></i> Android</button>
+              <button style="flex:1; min-height:40px; border-radius:10px; border:1px solid var(--border-default); background:var(--bg-surface); font-family:var(--ui-font); font-size:13px; font-weight:600; color:var(--text-subtle); display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;"><i data-lucide="smartphone" width="15" height="15"></i> iPhone</button>
+            </div>
+          </div>
+          <div class="wrow" style="margin-top:12px;">
+            <span class="bh-avatar bh-avatar--sm" style="background:var(--gold-100); color:var(--gold-700);">J</span>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:14px; font-weight:600; color:var(--text-strong);">To Jim · Dad</div>
+              <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);">(604) 555‑0192 · Google Play</div>
+            </div>
+            <i data-lucide="smartphone" width="18" height="18" style="color:var(--text-subtle);"></i>
+          </div>
+          <div style="margin-top:12px; padding:12px; background:var(--bg-sunken); border-radius:var(--radius-lg);">
+            <div style="font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; color:var(--text-subtle); margin-bottom:8px; text-align:center;">TEXT MESSAGE PREVIEW</div>
+            <div style="background:var(--gold-50); border:1px solid var(--gold-100); border-radius:16px; border-top-left-radius:5px; padding:11px 14px; font-size:13.5px; line-height:1.5; color:var(--text-body);">Hi Dad — it's Kara. I set up Bramholt to keep your phone safe. Tap to install, your code is already in it: <span style="color:var(--text-link); font-weight:600; word-break:break-all;">bramholt.com/j/4291</span></div>
+          </div>
+          <div class="wgrow"></div>
+          <div class="wcta">
+            <button class="bh-btn bh-btn--gold bh-btn--lg bh-btn--block"><i data-lucide="send" width="18" height="18"></i> Send text to Jim</button>
+            <div class="wnote"><i data-lucide="volume-2" width="15" height="15" style="vertical-align:-2px;"></i> Or read the code aloud: <span class="wmono" style="font-weight:600; color:var(--text-strong);">4‑2‑9‑1</span></div>
+          </div>
+        </div></div>
+      </div></div>
+    </div>
+  </figure>
+
+  <!-- K5 — CHOOSE PLAN -->
+  <figure class="frame" data-flow="k" data-step="4" id="k5">
+    <figcaption><span class="badge">K5</span><span class="name">Choose protection</span></figcaption>
+    <div class="browser is-mobile">
+      <div class="browser-bar"><span class="lights"><span></span><span></span><span></span></span><span class="addr"><i data-lucide="lock" width="12" height="12"></i> bramholt.com/setup/plan</span></div>
+      <div class="browser-body"><div class="webpage">
+        <div class="wtop"><span class="wmk">BRAMHOLT</span><a href="#">Help</a></div>
+        <div class="wbody"><div class="wcard">
+          <button class="bh-iconbtn bh-iconbtn--sm wback"><i data-lucide="chevron-left" width="22" height="22"></i></button>
+          <div class="wsteps"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span><span></span></div>
+          <h1 class="wh">Choose protection</h1>
+          <p class="wsub">One plan, everything included — built for full caregiving.</p>
+          <div style="border:2px solid var(--gold-500); border-radius:var(--radius-lg); background:var(--bg-surface); box-shadow:var(--shadow-md); padding:18px; margin-top:16px;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+              <div>
+                <div style="font-family:var(--font-wordmark); letter-spacing:.14em; font-size:11px; color:var(--gold-700);">GUARDIAN PLAN</div>
+                <div style="font-family:var(--font-display); font-weight:600; font-size:21px; color:var(--text-strong); margin-top:4px;">Full protection</div>
+              </div>
+              <div style="text-align:right; white-space:nowrap;"><span style="font-family:var(--font-mono); font-weight:600; font-size:24px; color:var(--text-strong);">$19</span><span style="font-family:var(--font-mono); font-size:13px; color:var(--text-muted);">/mo</span></div>
+            </div>
+            <div style="height:1px; background:var(--border-subtle); margin:14px 0;"></div>
+            <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:11px;">
+              <li style="display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--text-body); line-height:1.4;"><i data-lucide="check" width="18" height="18" style="color:var(--status-protected); flex:none; margin-top:2px;"></i><span>We listen on every call</span></li>
+              <li style="display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--text-body); line-height:1.4;"><i data-lucide="check" width="18" height="18" style="color:var(--status-protected); flex:none; margin-top:2px;"></i><span>Scams ended before they reach Jim</span></li>
+              <li style="display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--text-body); line-height:1.4;"><i data-lucide="check" width="18" height="18" style="color:var(--status-protected); flex:none; margin-top:2px;"></i><span>Spoken message summaries you approve</span></li>
+              <li style="display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--text-body); line-height:1.4;"><i data-lucide="check" width="18" height="18" style="color:var(--status-protected); flex:none; margin-top:2px;"></i><span>You control who can get through</span></li>
+            </ul>
+          </div>
+          <div class="wgrow"></div>
+          <div class="wcta">
+            <button class="bh-btn bh-btn--gold bh-btn--lg bh-btn--block">Start protecting Jim</button>
+            <div class="wnote wmono" style="font-size:12px; color:var(--text-subtle);">14‑day free trial · cancel anytime</div>
+          </div>
+        </div></div>
+      </div></div>
+    </div>
+  </figure>
+
+  <!-- K6 — TRUSTED PEOPLE (KARA) -->
+  <figure class="frame" data-flow="k" data-step="5" id="k6">
+    <figcaption><span class="badge">K6</span><span class="name">People Jim trusts</span></figcaption>
+    <div class="browser is-mobile">
+      <div class="browser-bar"><span class="lights"><span></span><span></span><span></span></span><span class="addr"><i data-lucide="lock" width="12" height="12"></i> bramholt.com/setup/contacts</span></div>
+      <div class="browser-body"><div class="webpage">
+        <div class="wtop"><span class="wmk">BRAMHOLT</span><a href="#">Help</a></div>
+        <div class="wbody"><div class="wcard">
+          <button class="bh-iconbtn bh-iconbtn--sm wback"><i data-lucide="chevron-left" width="22" height="22"></i></button>
+          <div class="wsteps"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+          <h1 class="wh">Who can reach Jim?</h1>
+          <p class="wsub">Add the people allowed to call him. Jim can add more from his phone, too.</p>
+          <div style="display:flex; flex-direction:column; gap:9px; margin-top:18px;">
+            <div class="wrow">
+              <span class="bh-avatar bh-avatar--sm" style="background:#ecdcc0; color:#7c6038;">K</span>
+              <div style="flex:1; min-width:0;"><div style="font-size:15px; font-weight:600; color:var(--text-strong);">You (Kara)</div><div style="font-size:12.5px; color:var(--text-muted);">Daughter</div></div>
+              <span style="display:inline-flex; align-items:center; gap:5px; color:var(--status-protected); font-size:12.5px; font-weight:600;"><i data-lucide="check" width="15" height="15"></i> Added</span>
+            </div>
+            <div class="wrow">
+              <span class="bh-avatar bh-avatar--sm" style="background:#d2e7d9; color:#185338;">S</span>
+              <div style="flex:1; min-width:0;"><div style="font-size:15px; font-weight:600; color:var(--text-strong);">Sam</div><div style="font-size:12.5px; color:var(--text-muted);">Son</div></div>
+              <span style="display:inline-flex; align-items:center; gap:5px; color:var(--status-protected); font-size:12.5px; font-weight:600;"><i data-lucide="check" width="15" height="15"></i> Added</span>
+            </div>
+            <div class="wrow">
+              <span class="bh-avatar bh-avatar--sm" style="background:#e7d9bf; color:#5c462a;">R</span>
+              <div style="flex:1; min-width:0;"><div style="font-size:15px; font-weight:600; color:var(--text-strong);">Dr. Reyes</div><div style="font-size:12.5px; color:var(--text-muted);">Family doctor</div></div>
+              <span style="display:inline-flex; align-items:center; gap:5px; color:var(--status-protected); font-size:12.5px; font-weight:600;"><i data-lucide="check" width="15" height="15"></i> Added</span>
+            </div>
+            <button style="display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px dashed var(--gold-300); background:var(--gold-50); border-radius:var(--radius-md); cursor:pointer; font-family:var(--ui-font); width:100%; text-align:left;">
+              <span style="width:36px; height:36px; border-radius:50%; background:var(--bg-surface); border:1px solid var(--gold-200); color:var(--gold-700); display:flex; align-items:center; justify-content:center; flex:none;"><i data-lucide="plus" width="18" height="18"></i></span>
+              <span style="font-size:15px; font-weight:600; color:var(--gold-700);">Add someone else</span>
+            </button>
+          </div>
+          <div class="wgrow"></div>
+          <div class="wcta"><button class="bh-btn bh-btn--primary bh-btn--lg bh-btn--block">Continue</button></div>
+        </div></div>
+      </div></div>
+    </div>
+  </figure>
+
+  <!-- K7 — CONNECTED -->
+  <figure class="frame" data-flow="k" data-step="6" id="k7">
+    <figcaption><span class="badge">K7</span><span class="name">Connected</span></figcaption>
+    <div class="browser is-mobile">
+      <div class="browser-bar"><span class="lights"><span></span><span></span><span></span></span><span class="addr"><i data-lucide="lock" width="12" height="12"></i> bramholt.com/setup/done</span></div>
+      <div class="browser-body"><div class="webpage">
+        <div class="wtop"><span class="wmk">BRAMHOLT</span><a href="#">Account</a></div>
+        <div class="wbody"><div class="wcard" style="align-items:center; text-align:center;">
+          <div class="wgrow" style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%;">
+            <span style="width:96px; height:96px; border-radius:50%; background:var(--status-protected-bg); color:var(--status-protected); display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 8px rgba(31,107,71,.08);"><i data-lucide="shield-check" width="48" height="48"></i></span>
+            <div style="font-family:var(--font-display); font-weight:600; font-size:28px; color:var(--text-strong); margin-top:24px; line-height:1.2;">Jim's line is protected</div>
+            <div style="font-size:15.5px; line-height:1.55; color:var(--text-muted); margin-top:10px; max-width:34ch;">We're listening on every call now. You don't need to do anything.</div>
+            <div style="display:inline-flex; align-items:center; gap:7px; margin-top:10px; color:var(--status-protected); font-size:13px; font-weight:600;"><i data-lucide="phone-forwarded" width="16" height="16"></i> Calls forwarding to Bramholt</div>
+            <div style="display:flex; align-items:center; gap:13px; width:100%; max-width:420px; margin-top:24px; padding:16px; border:1px solid var(--border-subtle); background:var(--bg-surface); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); text-align:left;">
+              <span class="bh-avatar bh-avatar--lg" style="background:var(--gold-100); color:var(--gold-700);">J</span>
+              <div style="flex:1; min-width:0;">
+                <div style="font-weight:700; font-size:16px; color:var(--text-strong);">Jim · Dad</div>
+                <div style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted); margin-top:2px;">(604) 555‑0192 · Android</div>
+                <span class="bh-badge bh-badge--protected" style="margin-top:7px;"><span style="width:7px; height:7px; border-radius:50%; background:var(--status-protected); display:inline-block;"></span> Protected</span>
+              </div>
+            </div>
+          </div>
+          <div class="wcta" style="width:100%; max-width:420px;"><button class="bh-btn bh-btn--primary bh-btn--lg bh-btn--block">Open Jim's dashboard</button></div>
+        </div></div>
+      </div></div>
+    </div>
+  </figure>
+
+  <div class="handoff">
+    <span class="rule"></span>
+    <i data-lucide="git-merge" width="17" height="17"></i>
+    <span>Kara's text on <b style="color:var(--text-strong);">K4</b> carries a link with the code baked in — Jim taps it and lands on <b style="color:var(--text-strong);">J2</b> already connected. No typing.</span>
+    <span class="rule"></span>
+  </div>
+
+  <!-- =====================================================  JIM — native Android app  ===================================================== -->
+  <div class="group-title" data-group="j">
+    <span class="num">2</span>
+    <div>
+      <div class="eyebrow2">JIM · ELDER — Android app (the one app in the store)</div>
+      <div class="ttl">Big, calm, guided — Kara helps him through it</div>
+    </div>
+  </div>
+
+  <!-- J1 — WELCOME (elder) -->
+  <figure class="frame" data-flow="j" data-step="0" id="j1">
+    <figcaption><span class="badge">J1</span><span class="name">Welcome, Jim</span></figcaption>
+    <div class="phone phone--android"><div class="screen" style="background:var(--bg-page);">
+      <div style="position:absolute; top:13px; left:50%; transform:translateX(-50%); width:11px; height:11px; border-radius:50%; background:#0b0a08; z-index:8;"></div>
+      <div style="position:relative; z-index:6; height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 18px; color:var(--text-strong);">
+        <span style="font-family:var(--font-mono); font-weight:600; font-size:13px;">9:42</span>
+        <span style="display:flex; align-items:center; gap:7px;"><i data-lucide="wifi" width="15" height="15"></i><i data-lucide="signal" width="15" height="15"></i><i data-lucide="battery-full" width="18" height="15"></i></span>
+      </div>
+      <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; text-align:center; padding:18px 28px 26px;">
+        <span style="display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:var(--radius-pill); background:var(--gold-50); border:1px solid var(--gold-100); color:var(--gold-700); font-size:14px; font-weight:600;"><i data-lucide="users" width="17" height="17"></i> Kara is setting this up with you</span>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span style="width:120px; height:120px; border-radius:50%; background:var(--ink-900); display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-lg);"><img src="assets/bramholt-mark.svg" width="60" height="60" alt=""></span>
+          <div style="font-family:var(--font-display); font-weight:600; font-size:40px; color:var(--text-strong); margin-top:28px;">Hello, Jim</div>
+          <div style="font-size:22px; line-height:1.4; color:var(--text-body); margin-top:14px; max-width:16ch;">Bramholt keeps your phone safe from scam callers.</div>
+        </div>
+        <button class="bh-btn bh-btn--gold bh-btn--block" style="min-height:72px; font-size:23px; border-radius:var(--radius-pill);">Get started</button>
+      </div>
+      <div style="flex:none; height:24px; display:flex; align-items:center; justify-content:center;"><div style="width:110px; height:5px; border-radius:3px; background:rgba(0,0,0,.34);"></div></div>
+    </div></div>
+  </figure>
+
+  <!-- J2 — TAP LINK · AUTO-CONNECT -->
+  <figure class="frame" data-flow="j" data-step="1" id="j2">
+    <figcaption><span class="badge">J2</span><span class="name">Tap link · auto‑connect</span></figcaption>
+    <div class="phone phone--android"><div class="screen" style="background:var(--bg-page);">
+      <div style="position:absolute; top:13px; left:50%; transform:translateX(-50%); width:11px; height:11px; border-radius:50%; background:#0b0a08; z-index:8;"></div>
+      <div style="position:relative; z-index:6; height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 18px; color:var(--text-strong);">
+        <span style="font-family:var(--font-mono); font-weight:600; font-size:13px;">9:42</span>
+        <span style="display:flex; align-items:center; gap:7px;"><i data-lucide="wifi" width="15" height="15"></i><i data-lucide="signal" width="15" height="15"></i><i data-lucide="battery-full" width="18" height="15"></i></span>
+      </div>
+      <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; text-align:center; padding:18px 24px 24px;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span style="display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:var(--radius-pill); background:var(--status-protected-bg); color:var(--status-protected); font-size:15px; font-weight:600;"><i data-lucide="check" width="17" height="17"></i> Filled in from Kara's text</span>
+          <div style="font-family:var(--font-display); font-weight:600; font-size:30px; color:var(--text-strong); margin-top:22px;">You're connected to Kara</div>
+          <div style="font-size:20px; line-height:1.4; color:var(--text-body); margin-top:12px; max-width:20ch;">Your code came through. There's nothing to type.</div>
+          <div style="display:flex; gap:10px; justify-content:center; margin-top:26px;">
+            <div style="width:52px; height:66px; border-radius:14px; border:2px solid var(--guard-200); background:var(--guard-50); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-weight:600; font-size:34px; color:var(--text-strong);">4</div>
+            <div style="width:52px; height:66px; border-radius:14px; border:2px solid var(--guard-200); background:var(--guard-50); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-weight:600; font-size:34px; color:var(--text-strong);">2</div>
+            <div style="width:52px; height:66px; border-radius:14px; border:2px solid var(--guard-200); background:var(--guard-50); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-weight:600; font-size:34px; color:var(--text-strong);">9</div>
+            <div style="width:52px; height:66px; border-radius:14px; border:2px solid var(--guard-200); background:var(--guard-50); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-weight:600; font-size:34px; color:var(--text-strong);">1</div>
+          </div>
+        </div>
+        <button class="bh-btn bh-btn--gold bh-btn--block" style="min-height:72px; font-size:23px; border-radius:var(--radius-pill);">Continue</button>
+      </div>
+      <div style="flex:none; height:24px; display:flex; align-items:center; justify-content:center;"><div style="width:110px; height:5px; border-radius:3px; background:rgba(0,0,0,.34);"></div></div>
+    </div></div>
+  </figure>
+
+  <!-- J3 — CONNECTING (dark guardian) -->
+  <figure class="frame" data-flow="j" data-step="2" id="j3" data-auto="2400">
+    <figcaption><span class="badge">J3</span><span class="name">Connecting</span></figcaption>
+    <div class="phone phone--android"><div class="screen" style="background:var(--ink-900);">
+      <div style="position:absolute; top:13px; left:50%; transform:translateX(-50%); width:11px; height:11px; border-radius:50%; background:#000; z-index:8;"></div>
+      <div style="position:relative; z-index:6; height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 18px; color:#fff;">
+        <span style="font-family:var(--font-mono); font-weight:600; font-size:13px;">9:42</span>
+        <span style="display:flex; align-items:center; gap:7px;"><i data-lucide="wifi" width="15" height="15"></i><i data-lucide="signal" width="15" height="15"></i><i data-lucide="battery-full" width="18" height="15"></i></span>
+      </div>
+      <div style="flex:1; min-height:0; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px; overflow:hidden;">
+        <div style="position:absolute; top:50%; left:50%; width:240px; height:240px; transform:translate(-50%,-58%); border-radius:50%; border:2px solid rgba(196,160,99,.16);"></div>
+        <div style="position:absolute; top:50%; left:50%; width:360px; height:360px; transform:translate(-50%,-58%); border-radius:50%; border:2px solid rgba(196,160,99,.09);"></div>
+        <span style="width:104px; height:104px; border-radius:50%; background:rgba(196,160,99,.14); display:flex; align-items:center; justify-content:center; position:relative; color:var(--gold-300);"><i data-lucide="ear" width="48" height="48"></i></span>
+        <div style="font-family:var(--font-display); font-size:28px; color:var(--gold-100); margin-top:28px; position:relative;">Connecting to Kara…</div>
+        <div style="font-size:20px; color:rgba(236,220,192,.72); line-height:1.5; margin-top:12px; max-width:22ch; position:relative;">Just a moment. You don't need to do anything.</div>
+        <div style="display:flex; gap:10px; margin-top:26px; position:relative;">
+          <span style="width:12px; height:12px; border-radius:50%; background:var(--gold-400); animation:bh-pulse 1.4s var(--ease-standard) infinite;"></span>
+          <span style="width:12px; height:12px; border-radius:50%; background:var(--gold-400); animation:bh-pulse 1.4s var(--ease-standard) infinite; animation-delay:.2s;"></span>
+          <span style="width:12px; height:12px; border-radius:50%; background:var(--gold-400); animation:bh-pulse 1.4s var(--ease-standard) infinite; animation-delay:.4s;"></span>
+        </div>
+      </div>
+      <div style="flex:none; height:24px; display:flex; align-items:center; justify-content:center; background:var(--ink-900);"><div style="width:110px; height:5px; border-radius:3px; background:rgba(255,255,255,.40);"></div></div>
+    </div></div>
+  </figure>
+
+  <!-- J4 — PERMISSION -->
+  <figure class="frame" data-flow="j" data-step="3" id="j4">
+    <figcaption><span class="badge">J4</span><span class="name">Allow protection</span></figcaption>
+    <div class="phone phone--android"><div class="screen" style="background:var(--bg-page);">
+      <div style="position:absolute; top:13px; left:50%; transform:translateX(-50%); width:11px; height:11px; border-radius:50%; background:#0b0a08; z-index:8;"></div>
+      <div style="position:relative; z-index:6; height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 18px; color:var(--text-strong);">
+        <span style="font-family:var(--font-mono); font-weight:600; font-size:13px;">9:43</span>
+        <span style="display:flex; align-items:center; gap:7px;"><i data-lucide="wifi" width="15" height="15"></i><i data-lucide="signal" width="15" height="15"></i><i data-lucide="battery-full" width="18" height="15"></i></span>
+      </div>
+      <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; text-align:center; padding:18px 26px 24px;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span style="width:104px; height:104px; border-radius:50%; background:var(--gold-50); border:1px solid var(--gold-100); color:var(--gold-700); display:flex; align-items:center; justify-content:center;"><i data-lucide="shield-check" width="50" height="50"></i></span>
+          <div style="font-family:var(--font-display); font-weight:600; font-size:29px; color:var(--text-strong); margin-top:24px;">One last thing</div>
+          <div style="font-size:20px; line-height:1.45; color:var(--text-body); margin-top:12px; max-width:22ch;">Bramholt needs your permission to listen on your calls. It only steps in when a call isn't safe.</div>
+          <div style="display:inline-flex; align-items:center; gap:9px; margin-top:18px; padding:10px 16px; border-radius:var(--radius-md); background:var(--status-protected-bg); color:var(--status-protected); font-size:15px; font-weight:600;"><i data-lucide="lock" width="18" height="18"></i> Private — we never record your calls</div>
+        </div>
+        <button class="bh-btn bh-btn--safe bh-btn--block" style="min-height:72px; font-size:23px; border-radius:var(--radius-pill);">Turn on protection</button>
+        <button class="bh-btn bh-btn--block" style="background:transparent; color:var(--text-muted); min-height:52px; font-size:17px; margin-top:6px;">Why is this needed?</button>
+      </div>
+      <div style="flex:none; height:24px; display:flex; align-items:center; justify-content:center;"><div style="width:110px; height:5px; border-radius:3px; background:rgba(0,0,0,.34);"></div></div>
+    </div></div>
+  </figure>
+
+  <!-- J5 — FORWARD CALLS -->
+  <figure class="frame" data-flow="j" data-step="4" id="j5">
+    <figcaption><span class="badge">J5</span><span class="name">Forward calls · Kara</span></figcaption>
+    <div class="phone phone--android"><div class="screen" style="background:var(--bg-page);">
+      <div style="position:absolute; top:13px; left:50%; transform:translateX(-50%); width:11px; height:11px; border-radius:50%; background:#0b0a08; z-index:8;"></div>
+      <div style="position:relative; z-index:6; height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 18px; color:var(--text-strong);">
+        <span style="font-family:var(--font-mono); font-weight:600; font-size:13px;">9:43</span>
+        <span style="display:flex; align-items:center; gap:7px;"><i data-lucide="wifi" width="15" height="15"></i><i data-lucide="signal" width="15" height="15"></i><i data-lucide="battery-full" width="18" height="15"></i></span>
+      </div>
+      <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; text-align:center; padding:18px 26px 24px;">
+        <span style="display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:var(--radius-pill); background:var(--gold-50); border:1px solid var(--gold-100); color:var(--gold-700); font-size:14px; font-weight:600;"><i data-lucide="user-check" width="17" height="17"></i> Kara — this part's yours</span>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span style="width:86px; height:86px; border-radius:50%; background:var(--gold-50); border:1px solid var(--gold-100); color:var(--gold-700); display:flex; align-items:center; justify-content:center;"><i data-lucide="phone-forwarded" width="42" height="42"></i></span>
+          <div style="font-family:var(--font-display); font-weight:600; font-size:27px; color:var(--text-strong); margin-top:18px;">Send Jim's calls to Bramholt</div>
+          <div style="font-size:19px; line-height:1.4; color:var(--text-body); margin-top:10px; max-width:24ch;">Forward Jim's line so we can screen every call. We'll dial it for you.</div>
+          <div style="margin-top:14px; padding:11px 16px; border:1px solid var(--border-subtle); background:var(--bg-surface); border-radius:var(--radius-md); display:flex; flex-direction:column; align-items:center; gap:2px;">
+            <span style="font-size:13px; color:var(--text-muted);">Forwarding to</span>
+            <span style="font-family:var(--font-mono); font-weight:600; font-size:20px; color:var(--text-strong);">+1 (628) 555‑0177</span>
+            <span style="font-size:13px; color:var(--text-muted);">Bramholt screening line</span>
+          </div>
+        </div>
+        <button class="bh-btn bh-btn--gold bh-btn--block" style="min-height:66px; font-size:21px; border-radius:var(--radius-pill);"><i data-lucide="phone-forwarded" width="20" height="20"></i> Turn on call forwarding</button>
+        <div style="font-size:13px; color:var(--text-subtle); margin-top:8px;">This dials a forwarding code on Jim's phone.</div>
+      </div>
+      <div style="flex:none; height:24px; display:flex; align-items:center; justify-content:center;"><div style="width:110px; height:5px; border-radius:3px; background:rgba(0,0,0,.34);"></div></div>
+    </div></div>
+  </figure>
+
+  <!-- J6 — TRUSTED PEOPLE (elder) -->
+  <figure class="frame" data-flow="j" data-step="5" id="j6">
+    <figcaption><span class="badge">J6</span><span class="name">People Jim trusts</span></figcaption>
+    <div class="phone phone--android"><div class="screen" style="background:var(--bg-page);">
+      <div style="position:absolute; top:13px; left:50%; transform:translateX(-50%); width:11px; height:11px; border-radius:50%; background:#0b0a08; z-index:8;"></div>
+      <div style="position:relative; z-index:6; height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 18px; color:var(--text-strong);">
+        <span style="font-family:var(--font-mono); font-weight:600; font-size:13px;">9:44</span>
+        <span style="display:flex; align-items:center; gap:7px;"><i data-lucide="wifi" width="15" height="15"></i><i data-lucide="signal" width="15" height="15"></i><i data-lucide="battery-full" width="18" height="15"></i></span>
+      </div>
+      <div style="flex:1; min-height:0; display:flex; flex-direction:column; padding:18px 22px 20px;">
+        <div style="font-family:var(--font-display); font-weight:600; font-size:28px; color:var(--text-strong);">Who can call you?</div>
+        <div style="font-size:19px; line-height:1.4; color:var(--text-body); margin-top:10px;">Kara already added these. Jim can add anyone else he trusts.</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px;">
+          <div style="position:relative; display:flex; flex-direction:column; align-items:center; gap:9px; background:var(--bg-surface); border:2px solid var(--guard-200); border-radius:20px; padding:18px 8px;">
+            <span style="position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--guard-600); color:#fff; display:flex; align-items:center; justify-content:center;"><i data-lucide="check" width="15" height="15"></i></span>
+            <span style="width:60px; height:60px; border-radius:50%; background:#ecdcc0; color:#7c6038; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:24px;">K</span>
+            <div style="text-align:center;"><div style="font-size:18px; font-weight:700; color:var(--text-strong);">Kara</div><div style="font-size:13px; color:var(--text-muted);">Daughter</div></div>
+          </div>
+          <div style="position:relative; display:flex; flex-direction:column; align-items:center; gap:9px; background:var(--bg-surface); border:2px solid var(--guard-200); border-radius:20px; padding:18px 8px;">
+            <span style="position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--guard-600); color:#fff; display:flex; align-items:center; justify-content:center;"><i data-lucide="check" width="15" height="15"></i></span>
+            <span style="width:60px; height:60px; border-radius:50%; background:#d2e7d9; color:#185338; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:24px;">S</span>
+            <div style="text-align:center;"><div style="font-size:18px; font-weight:700; color:var(--text-strong);">Sam</div><div style="font-size:13px; color:var(--text-muted);">Son</div></div>
+          </div>
+          <div style="position:relative; display:flex; flex-direction:column; align-items:center; gap:9px; background:var(--bg-surface); border:2px solid var(--guard-200); border-radius:20px; padding:18px 8px;">
+            <span style="position:absolute; top:8px; right:8px; width:24px; height:24px; border-radius:50%; background:var(--guard-600); color:#fff; display:flex; align-items:center; justify-content:center;"><i data-lucide="check" width="15" height="15"></i></span>
+            <span style="width:60px; height:60px; border-radius:50%; background:#e7d9bf; color:#5c462a; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:22px;">R</span>
+            <div style="text-align:center;"><div style="font-size:18px; font-weight:700; color:var(--text-strong);">Dr. Reyes</div><div style="font-size:13px; color:var(--text-muted);">Doctor</div></div>
+          </div>
+          <button style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; background:var(--gold-50); border:2px dashed var(--gold-300); border-radius:20px; padding:18px 8px; cursor:pointer; font-family:var(--ui-font);">
+            <span style="width:60px; height:60px; border-radius:50%; background:var(--bg-surface); border:1px solid var(--gold-200); color:var(--gold-700); display:flex; align-items:center; justify-content:center;"><i data-lucide="plus" width="28" height="28"></i></span>
+            <div style="font-size:17px; font-weight:700; color:var(--gold-700);">Add person</div>
+          </button>
+        </div>
+        <div style="flex:1;"></div>
+        <button class="bh-btn bh-btn--gold bh-btn--block" style="min-height:66px; font-size:21px; border-radius:var(--radius-pill);">Continue</button>
+      </div>
+      <div style="flex:none; height:24px; display:flex; align-items:center; justify-content:center;"><div style="width:110px; height:5px; border-radius:3px; background:rgba(0,0,0,.34);"></div></div>
+    </div></div>
+  </figure>
+
+  <!-- J7 — ALL SET -->
+  <figure class="frame" data-flow="j" data-step="6" id="j7">
+    <figcaption><span class="badge">J7</span><span class="name">All set</span></figcaption>
+    <div class="phone phone--android"><div class="screen" style="background:var(--bg-page);">
+      <div style="position:absolute; top:13px; left:50%; transform:translateX(-50%); width:11px; height:11px; border-radius:50%; background:#0b0a08; z-index:8;"></div>
+      <div style="position:relative; z-index:6; height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 18px; color:var(--text-strong);">
+        <span style="font-family:var(--font-mono); font-weight:600; font-size:13px;">9:44</span>
+        <span style="display:flex; align-items:center; gap:7px;"><i data-lucide="wifi" width="15" height="15"></i><i data-lucide="signal" width="15" height="15"></i><i data-lucide="battery-full" width="18" height="15"></i></span>
+      </div>
+      <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; text-align:center; padding:18px 28px 26px;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+          <span style="width:120px; height:120px; border-radius:50%; background:var(--status-protected-bg); color:var(--status-protected); display:flex; align-items:center; justify-content:center; box-shadow:0 0 0 10px rgba(31,107,71,.08);"><i data-lucide="shield-check" width="58" height="58"></i></span>
+          <div style="font-family:var(--font-display); font-weight:600; font-size:34px; color:var(--text-strong); margin-top:26px;">You're all set, Jim</div>
+          <div style="font-size:22px; line-height:1.4; color:var(--text-body); margin-top:14px; max-width:18ch;">Your phone is protected. You don't need to do anything.</div>
+          <span style="display:inline-flex; align-items:center; gap:9px; margin-top:20px; padding:10px 18px; border-radius:var(--radius-pill); background:var(--ink-900); color:var(--gold-300); font-size:17px; font-weight:600;"><i data-lucide="shield-check" width="19" height="19"></i> Protected by Bramholt</span>
+        </div>
+        <button class="bh-btn bh-btn--primary bh-btn--block" style="min-height:72px; font-size:23px; border-radius:var(--radius-pill);">Go to my phone</button>
+      </div>
+      <div style="flex:none; height:24px; display:flex; align-items:center; justify-content:center;"><div style="width:110px; height:5px; border-radius:3px; background:rgba(0,0,0,.34);"></div></div>
+    </div></div>
+  </figure>
+
+</div><!-- /canvas -->
+
+<div class="hint" id="hint">Tap the gold / dark button on the device, or use the controls below</div>
+
+<div class="dock" id="dock">
+  <button class="navbtn" id="prev" aria-label="Previous screen"><i data-lucide="chevron-left" width="22" height="22"></i></button>
+  <div class="dots" id="dots"></div>
+  <div class="step" id="step">Step 1 of 7</div>
+  <button class="navbtn" id="next" aria-label="Next screen"><i data-lucide="chevron-right" width="22" height="22"></i></button>
+  <button class="navbtn" id="restart" aria-label="Restart flow"><i data-lucide="rotate-ccw" width="19" height="19"></i></button>
+</div>
+
+<script>
+(function () {
+  const FLOWS = {
+    k: ['k1','k2','k3','k4','k5','k6','k7'],
+    j: ['j1','j2','j3','j4','j5','j6','j7'],
+  };
+  const state = { flow: 'k', i: 0, mode: 'flow', kview: 'mobile' };
+  let autoTimer = null;
+
+  const $ = (s) => document.querySelector(s);
+  const frame = (id) => document.getElementById(id);
+  const karaBrowsers = () => document.querySelectorAll('.frame[data-flow="k"] .browser');
+
+  function drawIcons() {
+    if (window.lucide && window.lucide.createIcons) window.lucide.createIcons();
+    else setTimeout(drawIcons, 120);
+  }
+
+  function applyKaraView() {
+    // Gallery always shows Kara at mobile size; walkthrough honours the toggle.
+    const v = state.mode === 'all' ? 'mobile' : state.kview;
+    karaBrowsers().forEach((b) => {
+      b.classList.toggle('is-desktop', v === 'desktop');
+      b.classList.toggle('is-mobile', v === 'mobile');
+    });
+  }
+
+  function renderDots() {
+    const dots = $('#dots');
+    dots.innerHTML = '';
+    FLOWS[state.flow].forEach((_, idx) => {
+      const s = document.createElement('span');
+      if (idx === state.i) s.className = 'on';
+      dots.appendChild(s);
+    });
+  }
+
+  function show() {
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    const ids = FLOWS[state.flow];
+    document.querySelectorAll('.frame').forEach((f) => f.classList.remove('is-active'));
+    const id = ids[state.i];
+    const active = frame(id);
+    if (active) active.classList.add('is-active');
+
+    $('#prev').disabled = state.i === 0;
+    $('#next').disabled = state.i === ids.length - 1;
+    $('#step').textContent = 'Step ' + (state.i + 1) + ' of ' + ids.length;
+    renderDots();
+
+    if (active && active.dataset.auto && state.mode === 'flow') {
+      autoTimer = setTimeout(() => { if (state.i < ids.length - 1) go(state.i + 1); }, parseInt(active.dataset.auto, 10));
+    }
+  }
+
+  function go(i) {
+    const ids = FLOWS[state.flow];
+    state.i = Math.max(0, Math.min(ids.length - 1, i));
+    show();
+  }
+
+  function setFlow(flow) {
+    state.flow = flow;
+    state.i = 0;
+    document.body.classList.toggle('flow-k', flow === 'k');
+    document.body.classList.toggle('flow-j', flow === 'j');
+    document.querySelectorAll('.seg button[data-flow]').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b.dataset.flow === flow)));
+    applyKaraView();
+    show();
+  }
+
+  function setKaraView(v) {
+    state.kview = v;
+    document.querySelectorAll('.seg button[data-kview]').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b.dataset.kview === v)));
+    applyKaraView();
+  }
+
+  function setMode(mode) {
+    state.mode = mode;
+    document.body.classList.toggle('mode-flow', mode === 'flow');
+    document.body.classList.toggle('mode-all', mode === 'all');
+    document.querySelectorAll('.seg button[data-mode]').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+    applyKaraView();
+    if (mode === 'flow') show();
+    else if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  }
+
+  // ---- wiring ----
+  document.querySelectorAll('.seg button[data-flow]').forEach((b) =>
+    b.addEventListener('click', () => { if (state.mode !== 'flow') setMode('flow'); setFlow(b.dataset.flow); }));
+  document.querySelectorAll('.seg button[data-mode]').forEach((b) =>
+    b.addEventListener('click', () => setMode(b.dataset.mode)));
+  document.querySelectorAll('.seg button[data-kview]').forEach((b) =>
+    b.addEventListener('click', () => setKaraView(b.dataset.kview)));
+
+  $('#prev').addEventListener('click', () => go(state.i - 1));
+  $('#next').addEventListener('click', () => go(state.i + 1));
+  $('#restart').addEventListener('click', () => go(0));
+
+  // In-screen buttons drive the flow: gold/primary/safe = forward, back chevron = back.
+  document.addEventListener('click', (e) => {
+    const fig = e.target.closest('.frame');
+    if (!fig) return;
+
+    if (state.mode === 'all') {
+      setMode('flow');
+      setFlow(fig.dataset.flow);
+      go(parseInt(fig.dataset.step, 10));
+      return;
+    }
+    if (!fig.classList.contains('is-active')) return;
+
+    const back = e.target.closest('.bh-iconbtn');
+    const fwd = e.target.closest('.bh-btn--gold, .bh-btn--primary, .bh-btn--safe');
+    if (back) { e.preventDefault(); go(state.i - 1); }
+    else if (fwd) { e.preventDefault(); go(state.i + 1); }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (state.mode !== 'flow') return;
+    if (e.key === 'ArrowRight') go(state.i + 1);
+    if (e.key === 'ArrowLeft') go(state.i - 1);
+  });
+
+  drawIcons();
+  setTimeout(drawIcons, 600);
+  setMode('flow');
+  setKaraView('mobile');
+  setFlow('k');
+})();
+</script>
+</body>
+</html>

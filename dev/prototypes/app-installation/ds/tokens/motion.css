@@ -1,0 +1,25 @@
+/* ============================================================
+   Bramholt — Motion tokens
+   Motion is calm and reassuring: short, eased, no bounce.
+   Status changes fade and settle; nothing darts or springs.
+   ============================================================ */
+
+:root {
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:       cubic-bezier(0.4, 0, 1, 1);
+
+  --duration-fast:   120ms;
+  --duration-normal: 200ms;
+  --duration-slow:   320ms;
+  --duration-calm:   600ms; /* status transitions, breathing rings */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast:   0ms;
+    --duration-normal: 0ms;
+    --duration-slow:   0ms;
+    --duration-calm:   0ms;
+  }
+}

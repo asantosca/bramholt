@@ -3,25 +3,33 @@
 _Last reviewed: 2026-06-25_
 
 ## Mission
-_Why does Bramholt exist? One sentence._
+
+We protect the vulnerable elderly by actively listening on the phone call for scamming attempts, dropping the call if we detect a scam.
 
 ## Problem
-_What painful, specific problem are we solving, and for whom?_
+
+The elderly are exposed to scammers pretending to be their doctor, bank, a parent.
 
 ## Target customer
-- **Who:**
-- **What they do today (the status quo / workaround):**
-- **Why now:**
+
+- **Who:** Elderly who can't reliably tell scams from legitimate calls.
+- **What they do today (the status quo / workaround):** None currently. Customers rely on the phone telling them this number is likely a spam or not.
+- **Why now:** The technology allows us to provide good means of inspecting the phone line for scams.
 
 ## Positioning
-_For [customer] who [need], Bramholt is a [category] that [key benefit].
-Unlike [alternative], we [differentiator]._
+
+\_For elders who need to stay safe from scam calls, Bramholt is a security company that protects elders from phone scammers.
+
+Unlike Robokiller, we don't just listen at the beginning of the call, we continue protecting the elder.
 
 ## North-star metric
-_The one number that best tracks delivered value (e.g. weekly active teams)._
+
+To be defined. Churn less than 1%.
 
 ## Moats / unfair advantage
-_What's hard to copy — distribution, data, expertise, speed?_
+
+We provide constant contact with the elder and work with care providers to enhance elder's lives.
 
 ## Non-goals
-_What we are deliberately NOT doing (yet). Saves a solo founder from scope creep._
+
+We are not a safety company that protects from other attacks, such as Whatsapp, Messenger, email, etc. We specialize in phone calls.

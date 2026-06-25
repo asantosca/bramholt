@@ -1,0 +1,122 @@
+/* ============================================================
+   Bramholt — Color tokens
+   The Heritage Guardian palette, drawn from the brand emblem:
+   antique GOLD on warm PITCH-black, over CREAM parchment, with
+   WALNUT browns. Gold is the signature; obsidian is the anchor.
+   Guard green = protected · Amber = screening · Oxblood = blocked.
+   ============================================================ */
+
+:root {
+  /* --- Pitch / obsidian (the guardian black; warm, not cool) --- */
+  --ink-900: #100d09;   /* deepest — emblem ground */
+  --ink-800: #1a1611;
+  --ink-700: #241e17;
+  --ink-600: #322a20;
+
+  /* --- Walnut / bronze (leather, warmth) --- */
+  --walnut-700: #3e2610;
+  --walnut-600: #5a3c1f;
+  --walnut-500: #7a5530;
+  --walnut-300: #a98a5f;
+
+  /* --- Warm neutral "Stone" ramp (parchment → taupe) --- */
+  --stone-0:   #fffdf9;
+  --stone-50:  #faf4e8;   /* page */
+  --stone-100: #f3ead8;
+  --stone-200: #e7d9bf;   /* subtle border */
+  --stone-300: #d4c09c;
+  --stone-400: #b09b78;
+  --stone-500: #7d6e57;
+  --stone-600: #5c4f3d;
+  --stone-700: #3e352a;
+  --stone-800: #2b2218;
+
+  /* --- Antique GOLD / brass (signature accent) --- */
+  --gold-50:  #f7f0e1;
+  --gold-100: #ecdcc0;
+  --gold-200: #ddc193;
+  --gold-300: #cfaa6f;
+  --gold-400: #c4a063;   /* emblem gold — the brand accent */
+  --gold-500: #b08a4e;
+  --gold-600: #97774a;   /* readable gold on light (text/borders) */
+  --gold-700: #7c6038;
+  --gold-800: #5c462a;
+  --gold-900: #3d2f1c;
+
+  /* --- Guard green (protected / safe / success) --- */
+  --guard-50:  #eaf2ec;
+  --guard-100: #d2e7d9;
+  --guard-200: #a6cdb2;
+  --guard-500: #2f8159;
+  --guard-600: #1f6b47;   /* primary safe */
+  --guard-700: #185338;
+
+  /* --- Amber / honey (screening / caution) --- */
+  --amber-50:  #fbf1dd;
+  --amber-100: #f6e2bc;
+  --amber-200: #eecb89;
+  --amber-500: #d99524;
+  --amber-600: #bd7d16;   /* primary caution — warmer/more orange than brass gold */
+  --amber-700: #95610f;
+
+  /* --- Oxblood / crimson (scam blocked / danger) --- */
+  --crimson-50:  #f8e9e6;
+  --crimson-100: #efd2cd;
+  --crimson-200: #dca59c;
+  --crimson-500: #b13e33;
+  --crimson-600: #9a2d24;   /* primary danger — deep oxblood */
+  --crimson-700: #7c241d;
+
+  /* ============================================================
+     Semantic aliases — reach for these in components/screens
+     ============================================================ */
+
+  /* Surfaces & backgrounds */
+  --bg-page:     var(--stone-50);
+  --bg-surface:  var(--stone-0);
+  --bg-sunken:   var(--stone-100);
+  --bg-inverse:  var(--ink-900);
+  --bg-brand-soft: var(--gold-50);
+
+  /* Text */
+  --text-strong:  #1c150d;
+  --text-body:    var(--stone-800);
+  --text-muted:   var(--stone-600);
+  --text-subtle:  var(--stone-500);
+  --text-on-dark: var(--stone-50);
+  --text-on-brand: var(--stone-50);
+  --text-gold:    var(--gold-700);   /* gold text on light surfaces */
+  --text-link:    var(--gold-700);
+
+  /* Borders */
+  --border-subtle:  var(--stone-200);
+  --border-default: var(--stone-300);
+  --border-strong:  var(--gold-600);
+
+  /* Brand actions — primary is obsidian; gold is the accent CTA */
+  --brand:        var(--ink-900);
+  --brand-hover:  var(--ink-700);
+  --brand-press:  var(--ink-800);
+  --brand-soft:   var(--gold-50);
+
+  /* Gold accent (CTAs, highlights, the mark) */
+  --gold:         var(--gold-400);
+  --gold-deep:    var(--gold-600);
+  --on-gold:      var(--ink-900);
+
+  /* Status — the heart of the product language */
+  --status-protected:     var(--guard-600);
+  --status-protected-bg:   var(--guard-50);
+  --status-protected-line: var(--guard-200);
+
+  --status-screening:      var(--amber-600);
+  --status-screening-bg:    var(--amber-50);
+  --status-screening-line:  var(--amber-200);
+
+  --status-blocked:        var(--crimson-600);
+  --status-blocked-bg:      var(--crimson-50);
+  --status-blocked-line:    var(--crimson-200);
+
+  /* Focus — bronze ring, visible on cream */
+  --focus-ring: var(--gold-600);
+}

@@ -1,0 +1,31 @@
+/* ============================================================
+   Bramholt — Spacing & sizing tokens
+   4px base grid. Touch targets are generous (>=48px) because
+   primary users are older adults; --tap-min enforces this.
+   ============================================================ */
+
+:root {
+  --space-0:  0;
+  --space-1:  0.25rem;  /* 4  */
+  --space-2:  0.5rem;   /* 8  */
+  --space-3:  0.75rem;  /* 12 */
+  --space-4:  1rem;     /* 16 */
+  --space-5:  1.5rem;   /* 24 */
+  --space-6:  2rem;     /* 32 */
+  --space-7:  2.5rem;   /* 40 */
+  --space-8:  3rem;     /* 48 */
+  --space-9:  4rem;     /* 64 */
+  --space-10: 5rem;     /* 80 */
+  --space-12: 6rem;     /* 96 */
+
+  /* Touch & control sizing */
+  --tap-min:      48px;  /* minimum interactive target */
+  --control-sm:   40px;
+  --control-md:   48px;
+  --control-lg:   56px;
+
+  /* Layout */
+  --container-max: 1200px;
+  --container-prose: 68ch;
+  --gutter: var(--space-5);
+}
