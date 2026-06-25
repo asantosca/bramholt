@@ -1,0 +1,10 @@
+<resources>
+    <!-- Bramholt "Heritage Guardian" palette -->
+    <color name="ink900">#100D09</color>
+    <color name="ink800">#1B1610</color>
+    <color name="gold">#C4A063</color>
+    <color name="cream">#F3ECDD</color>
+    <color name="stone">#A89C86</color>
+    <color name="crimson">#B23A33</color>
+    <color name="guard_green">#5C7A52</color>
+</resources>

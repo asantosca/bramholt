@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Bramholt</string>
+
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_protected">You’re protected. Bramholt is listening for scam calls.</string>
+    <string name="status_error">Couldn’t connect: %1$s</string>
+    <string name="tap_to_retry">Tap to try again</string>
+
+    <string name="call_incoming">Incoming call</string>
+    <string name="call_screening">Bramholt is screening this call…</string>
+    <string name="call_scam_title">We stopped this call</string>
+    <string name="call_scam_body">It looked like a scam, so Bramholt ended it. You’re safe — you did nothing wrong.</string>
+    <string name="call_scam_spoken">This is Bramholt. That call looked like a scam, so we ended it. You are safe.</string>
+
+    <string name="btn_accept">Answer</string>
+    <string name="btn_decline">Decline</string>
+    <string name="btn_hangup">Hang up</string>
+    <string name="btn_done">Done</string>
+</resources>

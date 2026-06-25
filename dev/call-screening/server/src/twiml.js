@@ -74,7 +74,11 @@ export function registerTwimlRoutes(app) {
       { identity }
     )
     token.addGrant(
-      new VoiceGrant({ outgoingApplicationSid: config.twilio.twimlAppSid, incomingAllow: true })
+      new VoiceGrant({
+        outgoingApplicationSid: config.twilio.twimlAppSid,
+        pushCredentialSid: config.twilio.pushCredentialSid, // routes incoming calls to the app via FCM
+        incomingAllow: true,
+      })
     )
     res.json({ identity, token: token.toJwt() })
   })

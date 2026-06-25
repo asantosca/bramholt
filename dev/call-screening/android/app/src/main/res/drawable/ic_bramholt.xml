@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="58dp"
+    android:viewportWidth="100"
+    android:viewportHeight="120">
+    <!-- Shield -->
+    <path
+        android:fillColor="#C4A063"
+        android:pathData="M22,40 H78 V69 C78,91 64,103 50,109 C36,103 22,91 22,69 Z" />
+    <!-- Inner cut so it reads as a guard mark -->
+    <path
+        android:fillColor="#100D09"
+        android:pathData="M29,46 H71 V69 C71,87 60,97 50,102 C40,97 29,87 29,69 Z" />
+    <!-- Crown bar -->
+    <path
+        android:fillColor="#C4A063"
+        android:pathData="M28,31 L33,17 L42,25 L50,11 L58,25 L67,17 L72,31 Z" />
+</vector>

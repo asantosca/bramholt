@@ -23,6 +23,8 @@ export const config = {
     apiKeySid: process.env.TWILIO_API_KEY_SID,
     apiKeySecret: process.env.TWILIO_API_KEY_SECRET,
     twimlAppSid: process.env.TWILIO_TWIML_APP_SID,
+    // FCM Push Credential (CR...) — required so incoming calls push to Jim's app.
+    pushCredentialSid: process.env.TWILIO_PUSH_CREDENTIAL_SID,
   },
 
   whisper: {

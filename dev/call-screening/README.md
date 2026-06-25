@@ -37,7 +37,7 @@ problem.
 |------|---------|
 | `server/` | The Node server: Twilio webhooks, Media Streams WS, Claude scam judgement. |
 | `whisper-service/` | Warm Python sidecar (faster-whisper) — the default transcription engine. |
-| `android/` | _(next)_ Jim's Twilio Voice softphone app. |
+| `android/` | Jim's Twilio Voice softphone app (Kotlin). Rings via FCM, polls `/status`, drops scams. |
 
 ## Prerequisites
 
