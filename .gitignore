@@ -1,0 +1,25 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Secrets — never commit
+.env
+.env.*
+*.key
+*.pem
+secrets/
+
+# Large/binary design assets (track via Git LFS or a links file instead)
+design/assets/**
+!design/assets/.gitkeep
+!design/assets/README.md
+
+# Dev build artifacts (the codebase under dev/ should also have its own .gitignore)
+node_modules/
+dist/
+build/
+__pycache__/
+*.log
